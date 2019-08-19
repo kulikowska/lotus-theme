@@ -57,3 +57,4 @@ Or, to run with Browser-Sync:
 - then run: `$ gulp watch-bs`
 
 [1] Visit [https://browsersync.io/](https://browsersync.io/) for more information on Browser Sync
+# lotus-theme
