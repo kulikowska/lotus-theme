@@ -43,43 +43,68 @@ function lotus_signup($request) {
     //$ret = get_fields($params['id']);
 
     $registeredUsers = get_field('registered_users', $params['id']);
+    //return get_field('registered_users', $params['id']);
+
+
     if (isset($registeredUsers)) {
         $available = get_field('slots_available', $params['id']);
+        //return $registeredUsers;
+        /*
+        if (count($registeredUsers) == $available) {
+            return 'Sorry! This class is full';
+        } else {
+            if (in_array($params['user'], $registeredUsers)) {
+                $pos = array_search($params['user'], $registeredUsers);
+                unset($registeredUsers[$pos]);
+            } else {
+                array_push($registeredUsers, $params['user']);
+            }
+            update_post_meta($params['id'], 'registered_users', $registeredUsers);
+        }
+        */
+
+        //return get_field('registered_users', $params['id']);
+        //return update_post_meta($params['id'], 'registered_users', ['129']);
+
 
         $pos = array_search($params['user'], $registeredUsers);
+        return empty($pos);
+        //return array_search($params['user'], $registeredUsers);
 
-        if (gettype($registeredUsers === 'array') && !is_int($pos)) {
+
+        if (empty($pos)) {
             if (count($registeredUsers) == $available) {
-                $resp = array(
-                    "success" => false,
-                    "action"  => "signup",
-                    "msg"     => "Class Full!"
-                );
-                return $resp;
+                return 'class full!';
             } else {
                 array_push($registeredUsers, $params['user']);
                 update_post_meta($params['id'], 'registered_users', $registeredUsers);
-
-                $resp = array(
-                    "success" => true,
-                    "action"  => "signup"
-                );
-                return $resp;
+                
+                return 'signed up';
             }
         } else {
+            $pos = array_search($params['user'], $registeredUsers);
             unset($registeredUsers[$pos]);
             update_post_meta($params['id'], 'registered_users', $registeredUsers);
 
-            $resp = array(
-                "success" => true,
-                "action"  => "unregister"
-            );
-            return $resp;
+            return 'removed from class';
         }
+        return $pos;
+
+
+
     } else {
         add_post_meta( $params['id'], 'registered_users', [$params['user']], true);
         return 'register the new field';
     }
+
+    /*
+    if ( !add_post_meta( $params['id'], 'registered_users', '123', true )) {
+        //$ret = update_post_meta($params['id'], 'registered_users', '124', true);
+        //$ret = 'already exists';
+    } else {
+    }
+    */
+
 
     return $ret;
 }

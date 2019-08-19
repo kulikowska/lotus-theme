@@ -50,31 +50,18 @@ function lotus_signup($request) {
 
         if (gettype($registeredUsers === 'array') && !is_int($pos)) {
             if (count($registeredUsers) == $available) {
-                $resp = array(
-                    "success" => false,
-                    "action"  => "signup",
-                    "msg"     => "Class Full!"
-                );
-                return $resp;
+                return 'class full!';
             } else {
                 array_push($registeredUsers, $params['user']);
                 update_post_meta($params['id'], 'registered_users', $registeredUsers);
-
-                $resp = array(
-                    "success" => true,
-                    "action"  => "signup"
-                );
-                return $resp;
+                
+                return 'signed up';
             }
         } else {
             unset($registeredUsers[$pos]);
             update_post_meta($params['id'], 'registered_users', $registeredUsers);
 
-            $resp = array(
-                "success" => true,
-                "action"  => "unregister"
-            );
-            return $resp;
+            return 'removed from class';
         }
     } else {
         add_post_meta( $params['id'], 'registered_users', [$params['user']], true);

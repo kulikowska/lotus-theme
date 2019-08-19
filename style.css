@@ -12,3 +12,77 @@
  Tags: one-column, custom-menu, featured-images, theme-options, translation-ready
  GitHub Theme URI: holger1411/understrap-child
 */
+
+body .user-profile-container {
+    margin : 20px auto;
+    max-width : 600px;
+    background : #fff;
+    padding : 20px;
+    color : #434343;
+}
+.user-profile-container .center-me {
+    display : flex;
+    flex-direction : column;
+    align-items : center;
+    font-size : 14px;
+    margin-bottom : 30px;
+}
+.user-profile-container #name {
+    font-size : 30px;
+    display : block;
+}
+.user-profile-container #picture {
+    border-radius : 50%;
+    height : 120px;
+    width : 120px;
+    margin : 15px;
+}
+.user-profile-container .sessions {
+    border-top : 1px solid #eee;
+    padding : 20px 0px;
+}
+.user-profile-container .sessions h1 {
+    font-size : 16px;
+    margin-bottom: 20px;
+}
+.user-profile-container .sessions div label {
+    font-size : 14px;
+    color : #615f5f;
+}
+.user-profile-container .sessions div span {
+    font-weight : bold;
+    font-size : 15px;
+}
+.user-profile-container #recommended-wrap {
+    margin-top : 10px;
+    font-size : 15px;
+}
+.dashicons.dashicons:before {
+    font-size : 20px;
+    border : 1px solid;
+    border-radius : 50px;
+    padding : 2px;
+}
+.dashicons {
+    display : inline-block;
+    margin-right : 7px;
+}
+.dashicons.dashicons-yes:before {
+    color : #2ba12b;
+}
+.dashicons.dashicons-no:before {
+    color : #e06464;
+}
+.verified {
+    margin-top : 10px;
+}
+.verified.no {
+    opacity : 0.6;
+}
+@media screen and (min-width: 768px) {
+    body .user-profile-container {
+        border : 1px solid #ddd;
+        padding : 50px;
+        margin : 40px auto;
+    }
+}
