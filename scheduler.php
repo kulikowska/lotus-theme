@@ -33,28 +33,36 @@
 
     function drawSignUp(classId, registered, slotsAvailable, update) {
 
-        const registeredCount = registered ? registered.length : 0;
-        const signedUp = (registeredCount > 0 && registered.indexOf(userId) !== -1) ? true : false;
+        // Registered will evaluate to false only when the user has tried to sign up for a class that is already full
+        if (registered) {
+            const registeredCount = registered ? registered.length : 0;
+            const signedUp = (registeredCount > 0 && registered.indexOf(userId) !== -1) ? true : false;
 
-        let item = '';
+            let item = '';
 
-        if (signedUp || (slotsAvailable - registeredCount !== 0)) {
-            item += `<button type="button" data-class-id=${classId} class="btn btn-outline-info" onclick="signUp(event)"> ${signedUp ? 'Cancel Sign Up' : 'Sign Up'}</button>`
-        }
+            if (signedUp || (slotsAvailable - registeredCount !== 0)) {
+                item += `<button type="button" data-class-id=${classId} class="btn btn-outline-info" onclick="signUp(event)"> ${signedUp ? 'Cancel Sign Up' : 'Sign Up'}</button>`
+            }
 
-        if (registeredCount  >= slotsAvailable) {
-            item += `Class Full!`
+            if (registeredCount  >= slotsAvailable) {
+                item += `Class Full!`
+            } else {
+                item += `
+                     <div class="spots">
+                        ${(slotsAvailable - registeredCount)} of ${slotsAvailable} open
+                    </div>`
+            }
+
+            if (update) {
+                $('#' + classId).html(item);
+            } else {
+                return item;
+            }
         } else {
-            item += `
-                 <div class="spots">
-                    ${(slotsAvailable - registeredCount)} of ${slotsAvailable} open
-                </div>`
-        }
-
-        if (update) {
-            $('#' + classId).html(item);
-        } else {
-            return item;
+            let danger = `<div class="alert alert-danger" role="alert">
+                            Oops, this class is already full! 
+                          </div>`
+            $('#' + classId).html(danger);
         }
     }
 
@@ -80,6 +88,8 @@
             if (json.success) {
                // Update the DOM
                drawSignUp(classId, json.data.registered, json.data.slots, true);
+            } else {
+               drawSignUp(classId, false);
             }
         })
         .catch(error => console.log(error.message));
