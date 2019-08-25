@@ -62,6 +62,7 @@ function lotus_signup($request) {
 
                 $resp = array(
                     "success" => true,
+                    "data"    => array( "registered" => $registeredUsers, "slots" => $available),
                     "action"  => "signup"
                 );
                 return $resp;
@@ -72,6 +73,7 @@ function lotus_signup($request) {
 
             $resp = array(
                 "success" => true,
+                "data"    => array( "registered" => $registeredUsers, "slots" => $available),
                 "action"  => "unregister"
             );
             return $resp;

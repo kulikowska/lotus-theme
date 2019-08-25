@@ -31,13 +31,38 @@
     const $ = jQuery;
 
 
+    function drawSignUp(classId, registered, slotsAvailable, update) {
+
+        const registeredCount = registered ? registered.length : 0;
+        const signedUp = (registeredCount > 0 && registered.indexOf(userId) !== -1) ? true : false;
+
+        let item = '';
+
+        if (signedUp || (slotsAvailable - registeredCount !== 0)) {
+            item += `<button type="button" data-class-id=${classId} class="btn btn-outline-info" onclick="signUp(event)"> ${signedUp ? 'Cancel Sign Up' : 'Sign Up'}</button>`
+        }
+
+        if (registeredCount  >= slotsAvailable) {
+            item += `Class Full!`
+        } else {
+            item += `
+                 <div class="spots">
+                    ${(slotsAvailable - registeredCount)} of ${slotsAvailable} open
+                </div>`
+        }
+
+        if (update) {
+            $('#' + classId).html(item);
+        } else {
+            return item;
+        }
+    }
 
     function signUp(event) {
-        //console.log(classID);
-        console.log($(event.target).data('class-id'));
+        let classId = $(event.target).data('class-id');
 
         let body = {
-           'id' : $(event.target).data('class-id'),
+           'id' : classId,
            'user' : userId 
         }
 
@@ -54,6 +79,7 @@
             console.log(json)
             if (json.success) {
                // Update the DOM
+               drawSignUp(classId, json.data.registered, json.data.slots, true);
             }
         })
         .catch(error => console.log(error.message));
@@ -62,15 +88,8 @@
     $(document).ready(function() {
         console.log(classes[0].registered_users);
 
-
         // Build DOM structure
         for (var i = 0; i < classes.length; i++) {
-           //console.log(classes[i].registered_users, ' length');
-           //console.log(classes[i].meta.slots_available, 'slots available');
-
-           const registeredCount = classes[i].registered_users ? classes[i].registered_users.length : 0;
-           const signedUp = (registeredCount > 0 && classes[i].registered_users.indexOf(userId) !== -1) ? true : false;
-
             let item = 
                 `
                  <div class="a-class">
@@ -90,37 +109,11 @@
                          <div class="post-content"> ${classes[i].post_content} </div>
 
                          <div class="sign-up" id=${classes[i].ID}>
-                  `;
-
-
-                   if (signedUp) {
-                     item += `
-                         <button type="button" data-class-id=${classes[i].ID} class="btn btn-outline-info" onclick="signUp(event)">Cancel Sign Up</button>
-                     `
-                   } else {
-                     item += `
-                         <button type="button" data-class-id=${classes[i].ID} class="btn btn-outline-info" onclick="signUp(event)">Sign Up</button>
-                     `
-                   }
-
-
-                   if (registeredCount  >= classes[i].meta.slots_available) {
-                        item += `
-                            Class Full!   
-                        `
-                   } else {
-                        item += `
-                             <div class="spots">
-                                ${(classes[i].meta.slots_available - registeredCount)} of ${classes[i].meta.slots_available} open
-                            </div>
-                        `
-                   }
-
-                   item += `
-                                </div>
-                            </div>
-                        </div>
-                   `
+                             ${drawSignUp(classes[i].ID, classes[i].registered_users, classes[i].meta.slots_available)}
+                         </div>
+                      </div>
+                  </div>
+              `;
             $('.schedule').append(item);    
         }
     });
@@ -142,6 +135,7 @@
     }
     .right-chunk {
         min-width : 60%;
+        max-width : 70%;
     }
     h1 {
         font-size : 28px;
@@ -168,6 +162,20 @@
     .sign-up .spots {
         color : #7a7a7a;
         margin-top : 5px;
+    }
+    @media screen and (max-width: 650px) {
+        .a-class {
+            flex-direction : column;
+        }
+        .left-chunk {
+            max-width : 100%;
+            margin-bottom : 20px;
+            margin-right : 0;
+        }
+        .right-chunk {
+            max-width : 100%;
+            margin-bottom : 20px;
+        }
     }
 </style>
 
