@@ -4,8 +4,9 @@
         $meta = get_fields($class->ID);
         $thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $class->ID ), 'single-post-thumbnail' );
 
-        $classes[$i]->meta      = $meta;
-        $classes[$i]->thumbnail = $thumbnail;
+        $classes[$i]->meta          = $meta;
+        $classes[$i]->host_profile  = um_user_profile_url($meta->host_name_->ID);
+        $classes[$i]->thumbnail     = $thumbnail;
         $classes[$i]->registered_users = get_field('registered_users', $class->ID);
     }
 
@@ -56,6 +57,7 @@
     const users         = <?php echo json_encode($users)  ?>;
     const $             = jQuery;
     //console.log(url, classes, users, currentUser);
+    console.log(classes);
 
 
     $(document).ready(function() {
@@ -87,7 +89,7 @@
                      <div class="right-chunk">
                          <h1>
                              <div class="title"> ${classes[i].post_title} </div>
-                             <div class="host"> ${classes[i].meta.host_name_.display_name} </div>
+                             <a href=${classes[i].host_profile} class="host"> ${classes[i].meta.host_name_.display_name} </a>
                          </h1>
                          <div class="details">
                              <div class="date"> ${classes[i].meta.date} </div>
