@@ -124,8 +124,14 @@
         .then(json => {
             console.log(json)
             if (json.success) {
+
                // Update the DOM
                drawSignUp(classId, json.data.registered, json.data.slots, true);
+
+               // Update classes data
+               const idxToUpdate = classes.findIndex(klass => klass.ID === classId);
+               classes[idxToUpdate].registered_users = json.data.registered;
+
             } else {
                drawSignUp(classId, 'fail');
             }
