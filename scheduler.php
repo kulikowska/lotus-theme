@@ -11,6 +11,11 @@
 
     $currentUser = wp_get_current_user(); 
 
+    $users = get_users();
+    foreach($users as $i => $user) {
+        $users[$i]->profile_url = um_user_profile_url($user->ID);
+    }
+
 ?>
 
 <?php get_header(); ?>
@@ -50,7 +55,7 @@
     const currentUser   = <?php echo json_encode($currentUser)  ?>;
 
     const url       = <?php echo json_encode(get_site_url( $wp->request )) ?>;
-    const users     = <?php echo json_encode(get_users())  ?>;
+    const users     = <?php echo json_encode($users)  ?>;
     const $ = jQuery;
 
     console.log(url, classes, users, currentUser);
@@ -80,7 +85,7 @@
 
             // Write in conditional to only show this when the user is host or admin
             if (currentUser.roles.indexOf('host') !== -1 || currentUser.roles.indexOf('administrator') !== -1) {
-                item += `<buttonetype="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${classId})">
+                item += `<button type="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${classId})">
                         Details
                     </button>`
             }
@@ -136,7 +141,16 @@
 
         thisClass.registered_users.map(ID => {
             let thisUser = users.find(user => user.ID === ID);
-            $('.list-group').append(`<div class="list-group-item"> ${thisUser.data.display_name} </div>`);
+            $('.list-group').append(`
+                <div class="list-group-item"> 
+                    ${thisUser.data.display_name} 
+                    <a href="${thisUser.data.profile_url}">
+                        <button type="button" class="btn btn-outline-dark">
+                            View Profile
+                        </button>
+                    </a>
+                </div>
+            `);
         });
     }
 
@@ -222,6 +236,11 @@
         position : absolute;
         top : 20px;
         right : 20px;
+    }
+    .list-group-item {
+        display : flex;
+        align-items : center;
+        justify-content : space-between;
     }
     @media screen and (max-width: 650px) {
         .a-class {
