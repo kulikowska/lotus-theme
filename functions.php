@@ -43,9 +43,9 @@ function lotus_signup($request) {
     //$ret = get_fields($params['id']);
 
     $registeredUsers = get_field('registered_users', $params['id']);
-    if (isset($registeredUsers)) {
-        $available = get_field('slots_available', $params['id']);
+    $available = get_field('slots_available', $params['id']);
 
+    if (isset($registeredUsers)) {
         $pos = array_search($params['user'], $registeredUsers);
 
         if (gettype($registeredUsers === 'array') && !is_int($pos)) {
@@ -80,6 +80,12 @@ function lotus_signup($request) {
         }
     } else {
         add_post_meta( $params['id'], 'registered_users', [$params['user']], true);
+        $resp = array(
+            "success" => true,
+            "data"    => array( "registered" => [$params['user']], "slots" => $available),
+            "action"  => "register"
+        );
+        return $resp;
         return 'register the new field';
     }
 

@@ -15,6 +15,26 @@
 
 	<div class="schedule"></div>
 
+    <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div><!-- .content-area -->
 
@@ -27,14 +47,16 @@
     const classes   = <?php echo json_encode($classes)  ?>;
     const userId    = <?php echo get_current_user_id() ?>;
     const url       = <?php echo json_encode(get_site_url( $wp->request )) ?>;
-    console.log(userId, url);
+    const users     = <?php echo json_encode(get_users())  ?>;
     const $ = jQuery;
+
+    console.log(userId, url, classes, users);
 
 
     function drawSignUp(classId, registered, slotsAvailable, update) {
 
-        // Registered will evaluate to false only when the user has tried to sign up for a class that is already full
-        if (registered) {
+        // Registered will equal fail only when the user has tried to sign up for a class that is already full
+        if (registered  !== 'fail') {
             const registeredCount = registered ? registered.length : 0;
             const signedUp = (registeredCount > 0 && registered.indexOf(userId) !== -1) ? true : false;
 
@@ -52,6 +74,12 @@
                         ${(slotsAvailable - registeredCount)} of ${slotsAvailable} open
                     </div>`
             }
+
+            // Write in conditional to only show this when the user is host or admin
+            item += `<buttonetype="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${classId})">
+                        Details
+                    </button>`
+
 
             if (update) {
                 $('#' + classId).html(item);
@@ -89,15 +117,26 @@
                // Update the DOM
                drawSignUp(classId, json.data.registered, json.data.slots, true);
             } else {
-               drawSignUp(classId, false);
+               drawSignUp(classId, 'fail');
             }
         })
         .catch(error => console.log(error.message));
     }
 
-    $(document).ready(function() {
-        console.log(classes[0].registered_users);
+    function getModalDetails(classId) {
+        thisClass = classes.find(klass => klass.ID === classId);
 
+        $('.modal-title').html(`${thisClass.post_name}`);
+        $('.list-group').html('');
+
+        thisClass.registered_users.map(ID => {
+            let thisUser = users.find(user => user.ID === ID);
+            $('.list-group').append(`<div class="list-group-item"> ${thisUser.data.display_name} </div>`);
+        });
+    }
+
+
+    $(document).ready(function() {
         // Build DOM structure
         for (var i = 0; i < classes.length; i++) {
             let item = 
@@ -168,10 +207,16 @@
         border-top : 1px solid #ddd;
         padding : 20px;
         margin-top : 20px;
+        position : relative;
     }
     .sign-up .spots {
         color : #7a7a7a;
         margin-top : 5px;
+    }
+    .details-button {
+        position : absolute;
+        top : 20px;
+        right : 20px;
     }
     @media screen and (max-width: 650px) {
         .a-class {
