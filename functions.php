@@ -26,7 +26,9 @@ function theme_enqueue_styles() {
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );
     }
+
     wp_enqueue_style( 'child-lotus-styles', get_stylesheet_directory_uri() . '/style.css?v='.time(), array('child-understrap-styles') );
+    wp_enqueue_script( 'moment', 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/af.js', true );
 }
 
 function add_child_theme_textdomain() {
@@ -46,10 +48,15 @@ function lotus_signup($request) {
     $available = get_field('slots_available', $params['id']);
 
     if (isset($registeredUsers)) {
-        $pos = array_search($params['user'], $registeredUsers);
 
-        if (gettype($registeredUsers === 'array') && !is_int($pos)) {
-            if (count($registeredUsers) == $available) {
+        $pos = array_search($params['user'], $registeredUsers);
+        //return is_int($pos);
+        //return (gettype($registeredUsers) === 'array');
+
+        if (gettype($registeredUsers) === 'array' && !is_int($pos)) {
+            if (count($registeredUsers) === $available) {
+
+
                 $resp = array(
                     "success" => false,
                     "action"  => "signup",
@@ -68,7 +75,9 @@ function lotus_signup($request) {
                 return $resp;
             }
         } else {
-            unset($registeredUsers[$pos]);
+
+
+            array_splice($registeredUsers, $pos, 1);
             update_post_meta($params['id'], 'registered_users', $registeredUsers);
 
             $resp = array(

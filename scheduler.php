@@ -15,7 +15,6 @@
     foreach($users as $i => $user) {
         $users[$i]->profile_url = um_user_profile_url($user->ID);
     }
-
 ?>
 
 <?php get_header(); ?>
@@ -53,12 +52,59 @@
 <script>
     const classes       = <?php echo json_encode($classes)  ?>;
     const currentUser   = <?php echo json_encode($currentUser)  ?>;
+    const url           = <?php echo json_encode(get_site_url( $wp->request )) ?>;
+    const users         = <?php echo json_encode($users)  ?>;
+    const $             = jQuery;
+    //console.log(url, classes, users, currentUser);
 
-    const url       = <?php echo json_encode(get_site_url( $wp->request )) ?>;
-    const users     = <?php echo json_encode($users)  ?>;
-    const $ = jQuery;
 
-    console.log(url, classes, users, currentUser);
+    $(document).ready(function() {
+
+        // Sort classes by date, only show classes from today onwards if admin or host
+        classes.sort(function(a, b){
+            let today = new Date();
+            let dateA = moment(a.meta.date, 'YY-MM-DD').toDate()
+            let dateB = moment(b.meta.date, 'YY-MM-DD').toDate()
+            return dateA > dateB ? -1 : dateA < dateB ? 1 : 0;
+        });
+
+        const basicOrHost = currentUser.roles.indexOf('basic') !== -1 || currentUser.roles.indexOf('host') !== -1 ? true : false;
+        if (basicOrHost) {
+            let idx = classes.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() < new Date());
+            classes.length = 3;
+        }
+        classes.reverse();
+
+
+        // Build DOM structure
+        for (var i = 0; i < classes.length; i++) {
+            let item = 
+                `
+                 <div class="a-class">
+                     <div class="left-chunk">
+                         <img src=${classes[i].thumbnail[0]} />
+                     </div>
+                     <div class="right-chunk">
+                         <h1>
+                             <div class="title"> ${classes[i].post_title} </div>
+                             <div class="host"> ${classes[i].meta.host_name_.display_name} </div>
+                         </h1>
+                         <div class="details">
+                             <div class="date"> ${classes[i].meta.date} </div>
+                             <div class="time"> ${classes[i].meta.time_of_class} </div>
+                             <div class="address"> ${classes[i].meta.address} </div>
+                         </div>
+                         <div class="post-content"> ${classes[i].post_content} </div>
+
+                         <div class="sign-up" id=${classes[i].ID}>
+                             ${drawSignUp(classes[i].ID, classes[i].registered_users, classes[i].meta.slots_available)}
+                         </div>
+                      </div>
+                  </div>
+              `;
+            $('.schedule').append(item);    
+        }
+    });
 
 
     function drawSignUp(classId, registered, slotsAvailable, update) {
@@ -83,13 +129,12 @@
                     </div>`
             }
 
-            // Write in conditional to only show this when the user is host or admin
-            if (currentUser.roles.indexOf('host') !== -1 || currentUser.roles.indexOf('administrator') !== -1) {
+            const adminOrHost = currentUser.roles.indexOf('administrator') !== -1 || currentUser.roles.indexOf('host') !== -1 ? true : false;
+            if (adminOrHost) {
                 item += `<button type="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${classId})">
                         Details
                     </button>`
             }
-
 
             if (update) {
                 $('#' + classId).html(item);
@@ -123,6 +168,7 @@
         .then(response => response.json())
         .then(json => {
             console.log(json)
+
             if (json.success) {
 
                // Update the DOM
@@ -142,7 +188,7 @@
     function getModalDetails(classId) {
         thisClass = classes.find(klass => klass.ID === classId);
 
-        $('.modal-title').html(`${thisClass.post_name}`);
+        $('.modal-title').html(`${thisClass.post_title}`);
         $('.list-group').html('');
 
         thisClass.registered_users.map(ID => {
@@ -159,38 +205,6 @@
             `);
         });
     }
-
-
-    $(document).ready(function() {
-        // Build DOM structure
-        for (var i = 0; i < classes.length; i++) {
-            let item = 
-                `
-                 <div class="a-class">
-                     <div class="left-chunk">
-                         <img src=${classes[i].thumbnail[0]} />
-                     </div>
-                     <div class="right-chunk">
-                         <h1>
-                             <div class="title"> ${classes[i].post_title} </div>
-                             <div class="host"> ${classes[i].meta.host_name_.display_name} </div>
-                         </h1>
-                         <div class="details">
-                             <div class="date"> ${classes[i].meta.date} </div>
-                             <div class="time"> ${classes[i].meta.time_of_class} </div>
-                             <div class="address"> ${classes[i].meta.address} </div>
-                         </div>
-                         <div class="post-content"> ${classes[i].post_content} </div>
-
-                         <div class="sign-up" id=${classes[i].ID}>
-                             ${drawSignUp(classes[i].ID, classes[i].registered_users, classes[i].meta.slots_available)}
-                         </div>
-                      </div>
-                  </div>
-              `;
-            $('.schedule').append(item);    
-        }
-    });
 </script>
 
 <style>
