@@ -9,6 +9,8 @@
         $classes[$i]->registered_users = get_field('registered_users', $class->ID);
     }
 
+    $currentUser = wp_get_current_user(); 
+
 ?>
 
 <?php get_header(); ?>
@@ -44,13 +46,14 @@
 </div><!-- Wrapper end -->
 
 <script>
-    const classes   = <?php echo json_encode($classes)  ?>;
-    const userId    = <?php echo get_current_user_id() ?>;
+    const classes       = <?php echo json_encode($classes)  ?>;
+    const currentUser   = <?php echo json_encode($currentUser)  ?>;
+
     const url       = <?php echo json_encode(get_site_url( $wp->request )) ?>;
     const users     = <?php echo json_encode(get_users())  ?>;
     const $ = jQuery;
 
-    console.log(userId, url, classes, users);
+    console.log(url, classes, users, currentUser);
 
 
     function drawSignUp(classId, registered, slotsAvailable, update) {
@@ -58,7 +61,7 @@
         // Registered will equal fail only when the user has tried to sign up for a class that is already full
         if (registered  !== 'fail') {
             const registeredCount = registered ? registered.length : 0;
-            const signedUp = (registeredCount > 0 && registered.indexOf(userId) !== -1) ? true : false;
+            const signedUp = (registeredCount > 0 && registered.indexOf(currentUser.ID) !== -1) ? true : false;
 
             let item = '';
 
@@ -76,9 +79,11 @@
             }
 
             // Write in conditional to only show this when the user is host or admin
-            item += `<buttonetype="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${classId})">
+            if (currentUser.roles.indexOf('host') !== -1 || currentUser.roles.indexOf('administrator') !== -1) {
+                item += `<buttonetype="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${classId})">
                         Details
                     </button>`
+            }
 
 
             if (update) {
@@ -99,7 +104,7 @@
 
         let body = {
            'id' : classId,
-           'user' : userId 
+           'user' : currentUser.ID 
         }
 
         let header = new Headers({ "Content-Type"  : "application/json" });
