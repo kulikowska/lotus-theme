@@ -62,21 +62,25 @@
 
     $(document).ready(function() {
 
-        // Sort classes by date, only show classes from today onwards if admin or host
+        // Sort classes by date, only show classes from today onwards if basic or host user
         classes.sort(function(a, b){
             let today = new Date();
-            let dateA = moment(a.meta.date, 'YY-MM-DD').toDate()
-            let dateB = moment(b.meta.date, 'YY-MM-DD').toDate()
+
+            let dateA = moment(a.meta.date + a.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY h:mm A').toDate()
+            let dateB = moment(b.meta.date + b.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY hh:mm A').toDate()
+
+            //console.log(dateA);
+            //console.log(dateB);
             return dateA > dateB ? -1 : dateA < dateB ? 1 : 0;
         });
 
         const basicOrHost = currentUser.roles.indexOf('basic') !== -1 || currentUser.roles.indexOf('host') !== -1 ? true : false;
         if (basicOrHost) {
             let idx = classes.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() < new Date());
-            classes.length = 3;
+            classes.length = idx;
         }
-        classes.reverse();
 
+        classes.reverse();
 
         // Build DOM structure
         for (var i = 0; i < classes.length; i++) {
