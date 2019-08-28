@@ -10,6 +10,14 @@
     }
 
     $joinedDate = date('F Y', strtotime($user_data->data->user_registered));
+
+
+    $classes = get_posts(array( 'post_type' => 'classes'));
+    foreach($classes as $i => $class) {
+        $meta = get_fields($class->ID);
+        $classes[$i]->meta          = $meta;
+        $classes[$i]->registered_users = get_field('registered_users', $class->ID);
+    }
 ?>
 
 <?php get_header(); ?>
@@ -34,11 +42,11 @@
             <h1> Sessions </h1>
             <div>
                 <label> Attended: </label>
-                <span> 5 </span>
+                <span id="attended"> </span>
             </div>
-            <div>
+            <div id="hosted-wrap" style="display : none ">
                 <label> Hosted: </label>
-                <span> 2 </span>
+                <span id="hosted"> </span>
             </div>
         </div>
 
@@ -61,6 +69,7 @@
     const verification      = <?php echo json_encode($user_verification)  ?>;
     const recommended       = <?php echo json_encode($recommendedByUser)  ?>;
     const joined            = <?php echo json_encode($joinedDate)  ?>;
+    let classes           = <?php echo json_encode($classes)  ?>;
 
     jQuery(document).ready(function() {
         console.log('data' , data);
@@ -68,12 +77,44 @@
         console.log('recommended', recommended);
         console.log('verification ', verification);
 
+        console.log(classes);
+
+        classes = classes.sort(function(a, b){
+            let today = new Date();
+            let dateA = moment(a.meta.date + a.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY h:mm A').toDate()
+            let dateB = moment(b.meta.date + b.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY hh:mm A').toDate()
+
+            return dateA < dateB ? -1 : dateA > dateB ? 1 : 0;
+        });
+        let idx = classes.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() > new Date());
+        classes.length = idx;
+
+        let hostedCount = 0;
+        let attendedCount = 0;
+
+        classes.forEach(klass => {
+            const userId = data.ID;
+            if (klass.registered_users.indexOf(userId) > -1) {
+                attendedCount++;
+            }
+            if (klass.meta.host_name_.ID === userId) {
+                hostedCount++;
+            }
+        });
+
+        if (data.roles.indexOf('host') > -1) {
+            jQuery('#hosted-wrap').show();
+            jQuery('#hosted').text(hostedCount);
+        }
+        jQuery('#attended').text(attendedCount);
+
+        //console.log(classes.reverse(), ' classes after');
+
         jQuery('#name').text(data.data.display_name);
         jQuery('#picture').attr("src", avatar);
         jQuery('#joined').text('Joined ' + joined);
 
         if (recommended) {
-            console.log('show me');
             jQuery('.recommendedBy').show();
             jQuery('#recommended').text(recommended);
         }
