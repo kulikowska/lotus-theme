@@ -28,6 +28,7 @@ function theme_enqueue_styles() {
     }
 
     wp_enqueue_style( 'child-lotus-styles', get_stylesheet_directory_uri() . '/style.css?v='.time(), array('child-understrap-styles') );
+    wp_enqueue_style( 'dashicons' );
     wp_enqueue_script( 'moment', 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/af.js', true );
 }
 

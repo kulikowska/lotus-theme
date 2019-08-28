@@ -84,30 +84,34 @@
 
         // Build DOM structure
         for (var i = 0; i < classes.length; i++) {
-            let item = 
-                `
-                 <div class="a-class">
-                     <div class="left-chunk">
-                         <img src=${classes[i].thumbnail[0]} />
-                     </div>
-                     <div class="right-chunk">
-                         <h1>
-                             <div class="title"> ${classes[i].post_title} </div>
-                             <a href=${classes[i].host_profile} class="host"> ${classes[i].meta.host_name_.display_name} </a>
-                         </h1>
-                         <div class="details">
-                             <div class="date"> ${classes[i].meta.date} </div>
-                             <div class="time"> ${classes[i].meta.time_of_class} </div>
-                             <div class="address"> ${classes[i].meta.address} </div>
-                         </div>
-                         <div class="post-content"> ${classes[i].post_content} </div>
+            let item = `<div class="a-class">`;
 
-                         <div class="sign-up" id=${classes[i].ID}>
-                             ${drawSignUp(classes[i].ID, classes[i].registered_users, classes[i].meta.slots_available)}
-                         </div>
-                      </div>
+            if (classes[i].thumbnail[0]) { 
+                 item += `
+                     <div class="left-chunk">
+                        <img src=${classes[i].thumbnail[0]} />
+                     </div>`
+            }
+
+            item += `
+                 <div class="right-chunk">
+                     <h1>
+                         <div class="title"> ${classes[i].post_title} </div>
+                         <a href=${classes[i].host_profile} class="host"> ${classes[i].meta.host_name_.display_name} </a>
+                     </h1>
+                     <div class="details">
+                         <div class="date"> ${classes[i].meta.date} </div>
+                         <div class="time"> ${classes[i].meta.time_of_class} </div>
+                         <div class="address"> ${classes[i].meta.address} </div>
+                     </div>
+                     <div class="post-content"> ${classes[i].post_content} </div>
+
+                     <div class="sign-up" id=${classes[i].ID}>
+                         ${drawSignUp(classes[i].ID, classes[i].registered_users, classes[i].meta.slots_available)}
+                     </div>
                   </div>
-              `;
+              </div>
+          `;
             $('.schedule').append(item);    
         }
     });
@@ -225,11 +229,12 @@
     }
     .left-chunk {
         max-width : 35%;
+        min-width : 30%;
         margin-right : 5%;
     }
     .right-chunk {
         min-width : 60%;
-        max-width : 70%;
+        //max-width : 70%;
     }
     h1 {
         font-size : 28px;
@@ -238,7 +243,8 @@
         justify-content : space-between;
     }
     .host {
-        font-size: 22px;
+        font-size: 20px;
+        color : #519d08;
     }
     .details {
         color : #7a7a7a;
@@ -261,7 +267,7 @@
     .details-button {
         position : absolute;
         top : 20px;
-        right : 20px;
+        right : 0px;
     }
     .list-group-item {
         display : flex;
