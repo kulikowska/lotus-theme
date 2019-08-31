@@ -13,9 +13,13 @@
  GitHub Theme URI: holger1411/understrap-child
 */
 
+body {
+    font-family : Source Sans Pro;
+    background-color : #F2F4F3;
+}
 body .user-profile-container {
     margin : 20px auto;
-    max-width : 600px;
+    max-width : 800px;
     background : #fff;
     padding : 20px;
     color : #434343;
@@ -78,6 +82,115 @@ body .user-profile-container {
 }
 .verified.no {
     opacity : 0.6;
+}
+.session-hosted {
+    border-top : 1px solid #eee;
+    //margin : 40px 0px;
+    padding-top : 40px;
+    padding-bottom : 20px;
+    font-size : 17px;
+    font-weight : bold;
+    text-align : center;
+}
+
+
+/* Schedule */
+.main-schedule-wrap {
+    padding :  40px 100px;
+}
+@media screen and (max-width: 650px) {
+    .main-schedule-wrap {
+        padding : 30px;
+    }
+}
+.schedule {
+    margin : 20px auto;
+}
+.a-class {
+    display : flex;
+    margin : 30px 0px 100px;
+}
+.left-chunk {
+    max-width : 30%;
+    min-width : 30%;
+    margin-right : 5%;
+}
+.right-chunk {
+    min-width : 65%;
+    max-width : 65%;
+}
+.post-content {
+    line-height : 27px;
+    white-space : pre-wrap;
+}
+h1 {
+    font-size : 28px;
+    display : flex;
+    align-items : center;
+    justify-content : space-between;
+}
+.host {
+    font-size: 18px;
+    color : #333;
+    display : flex;
+    align-items : center;
+    transition : 200ms;
+}
+.host:hover {
+    text-decoration : none;
+    /*color : #519d08; */
+    opacity : 0.6;
+}
+.host .dashicons {
+    margin-right : 12px;
+}
+.host .dashicons:before {
+    font-size : 18px;
+    padding : 2px 2px 2px 3px;
+}
+.details {
+    color : #7a7a7a;
+    margin-bottom : 15px;
+}
+.sign-up {
+    display : flex;
+    flex-direction : column;
+    justify-content : center;
+    align-items : center;
+    border-top : 1px solid #ddd;
+    padding : 20px;
+    margin-top : 20px;
+    position : relative;
+}
+.sign-up .spots {
+    color : #7a7a7a;
+    margin-top : 5px;
+}
+.details-button {
+    position : absolute;
+    top : 20px;
+    right : 0px;
+}
+.list-group-item {
+    display : flex;
+    align-items : center;
+    justify-content : space-between;
+}
+@media screen and (max-width: 650px) {
+    .a-class {
+        flex-direction : column;
+    }
+    .left-chunk {
+        max-width : 100%;
+        min-width : 100%;
+        margin-bottom : 20px;
+        margin-right : 0;
+    }
+    .right-chunk {
+        max-width : 100%;
+        min-width : 100%;
+        margin-bottom : 20px;
+    }
 }
 @media screen and (min-width: 768px) {
     body .user-profile-container {

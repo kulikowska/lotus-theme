@@ -1,4 +1,9 @@
 <?php /* Template Name: Scheduler */
+    if ( !is_user_logged_in() ) {
+        auth_redirect();
+    }
+
+    /*
     $classes = get_posts(array( 'post_type' => 'classes'));
     foreach($classes as $i => $class) {
         $meta = get_fields($class->ID);
@@ -9,34 +14,31 @@
         $classes[$i]->thumbnail     = $thumbnail;
         $classes[$i]->registered_users = get_field('registered_users', $class->ID);
     }
+    */
 
-    $currentUser = wp_get_current_user(); 
-
-    $users = get_users();
-    foreach($users as $i => $user) {
-        $users[$i]->profile_url = um_user_profile_url($user->ID);
-    }
 ?>
 
 <?php get_header(); ?>
 
-	<div class="schedule"></div>
+    <div class="main-schedule-wrap">
+        <div class="schedule"></div>
 
-    <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group">
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -74,16 +76,24 @@
             return dateA > dateB ? -1 : dateA < dateB ? 1 : 0;
         });
 
-        const basicOrHost = currentUser.roles.indexOf('basic') !== -1 || currentUser.roles.indexOf('host') !== -1 ? true : false;
+        //const basicOrHost = currentUser.roles.indexOf('basic') !== -1 || currentUser.roles.indexOf('host') !== -1 ? true : false;
+        const basicOrHost = currentUser.roles.indexOf('administrator') === -1 ? true : false;
         if (basicOrHost) {
             let idx = classes.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() < new Date());
             classes.length = idx;
         }
 
+        console.log(basicOrHost, ' basic or host');
+        console.log('classes from scheduler', classes);
+
         classes.reverse();
 
         // Build DOM structure
         for (var i = 0; i < classes.length; i++) {
+
+            const classDate = moment(classes[i].meta.date, 'DD-MM-YYYY').toDate();
+            const formattedDate = moment(classDate).format('dddd, MMMM DD, YYYY');
+
             let item = `<div class="a-class">`;
 
             if (classes[i].thumbnail[0]) { 
@@ -97,10 +107,13 @@
                  <div class="right-chunk">
                      <h1>
                          <div class="title"> ${classes[i].post_title} </div>
-                         <a href=${classes[i].host_profile} class="host"> ${classes[i].meta.host_name_.display_name} </a>
+                         <a href=${classes[i].host_profile} class="host"> 
+                            <span class="dashicons dashicons-admin-users"></span>
+                            ${classes[i].meta.host_name_.display_name}
+                         </a>
                      </h1>
                      <div class="details">
-                         <div class="date"> ${classes[i].meta.date} </div>
+                         <div class="date"> ${formattedDate} </div>
                          <div class="time"> ${classes[i].meta.time_of_class} </div>
                          <div class="address"> ${classes[i].meta.address} </div>
                      </div>
@@ -216,78 +229,4 @@
         });
     }
 </script>
-
-<style>
-    .schedule {
-        width : 90%;
-        margin : 20px auto;
-        font-family : Source Sans Pro;
-    }
-    .a-class {
-        display : flex;
-        margin : 30px 30px 100px;
-    }
-    .left-chunk {
-        max-width : 35%;
-        min-width : 30%;
-        margin-right : 5%;
-    }
-    .right-chunk {
-        min-width : 60%;
-        //max-width : 70%;
-    }
-    h1 {
-        font-size : 28px;
-        display : flex;
-        align-items : center;
-        justify-content : space-between;
-    }
-    .host {
-        font-size: 20px;
-        color : #519d08;
-    }
-    .details {
-        color : #7a7a7a;
-        margin-bottom : 15px;
-    }
-    .sign-up {
-        display : flex;
-        flex-direction : column;
-        justify-content : center;
-        align-items : center;
-        border-top : 1px solid #ddd;
-        padding : 20px;
-        margin-top : 20px;
-        position : relative;
-    }
-    .sign-up .spots {
-        color : #7a7a7a;
-        margin-top : 5px;
-    }
-    .details-button {
-        position : absolute;
-        top : 20px;
-        right : 0px;
-    }
-    .list-group-item {
-        display : flex;
-        align-items : center;
-        justify-content : space-between;
-    }
-    @media screen and (max-width: 650px) {
-        .a-class {
-            flex-direction : column;
-        }
-        .left-chunk {
-            max-width : 100%;
-            margin-bottom : 20px;
-            margin-right : 0;
-        }
-        .right-chunk {
-            max-width : 100%;
-            margin-bottom : 20px;
-        }
-    }
-</style>
-
 <?php get_footer(); ?>

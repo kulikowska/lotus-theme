@@ -10,14 +10,6 @@
     }
 
     $joinedDate = date('F Y', strtotime($user_data->data->user_registered));
-
-
-    $classes = get_posts(array( 'post_type' => 'classes'));
-    foreach($classes as $i => $class) {
-        $meta = get_fields($class->ID);
-        $classes[$i]->meta          = $meta;
-        $classes[$i]->registered_users = get_field('registered_users', $class->ID);
-    }
 ?>
 
 <?php get_header(); ?>
@@ -53,6 +45,8 @@
         <div class="sessions recommendedBy" style="display : none">
             <div id="recommended-wrap">Recommended by <span id="recommended"></span></div>
         </div>
+
+        <div class="schedule"></div>
     </div>
 
 
@@ -69,32 +63,65 @@
     const verification      = <?php echo json_encode($user_verification)  ?>;
     const recommended       = <?php echo json_encode($recommendedByUser)  ?>;
     const joined            = <?php echo json_encode($joinedDate)  ?>;
-    let classes           = <?php echo json_encode($classes)  ?>;
+    let classes             = <?php echo json_encode($classes)  ?>;
+    const $                 = jQuery;
 
     jQuery(document).ready(function() {
-        console.log('data' , data);
-        console.log('avatar' , avatar);
-        console.log('recommended', recommended);
-        console.log('verification ', verification);
-
-        console.log(classes);
-
-        classes = classes.sort(function(a, b){
+        sortedClasses = classes.sort(function(a, b){
             let today = new Date();
             let dateA = moment(a.meta.date + a.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY h:mm A').toDate()
             let dateB = moment(b.meta.date + b.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY hh:mm A').toDate()
 
             return dateA < dateB ? -1 : dateA > dateB ? 1 : 0;
         });
-        let idx = classes.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() > new Date());
-        classes.length = idx;
+
+        let thisHostsClasses = sortedClasses.filter(klass => klass.meta.host_name_.ID === data.ID);
+        if (data.roles.indexOf('host') !== -1) {
+            $('.schedule').append('<div class="session-hosted">Sessions Hosted </div>');    
+            thisHostsClasses.map(session => {
+
+                const classDate = moment(session.meta.date, 'DD-MM-YYYY').toDate();
+                const formattedDate = moment(classDate).format('dddd, MMMM DD, YYYY');
+
+                let item = `<div class="a-class">`;
+
+                if (session.thumbnail[0]) { 
+                     item += `
+                         <div class="left-chunk">
+                            <img src=${session.thumbnail[0]} />
+                         </div>`
+                }
+
+                item += `
+                     <div class="right-chunk">
+                         <h1>
+                             <div class="title"> ${session.post_title} </div>
+                             <a href=${session.host_profile} class="host"> ${session.meta.host_name_.display_name} </a>
+                         </h1>
+                         <div class="details">
+                             <div class="date"> ${formattedDate} </div>
+                             <div class="time"> ${session.meta.time_of_class} </div>
+                             <div class="address"> ${session.meta.address} </div>
+                         </div>
+                         <div class="post-content"> ${session.post_content} </div>
+                      </div>
+                  </div>
+              `;
+                $('.schedule').append(item);    
+            });
+        }
+
+
+
+        let idx = sortedClasses.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() > new Date());
+        sortedClasses.length = idx;
 
         let hostedCount = 0;
         let attendedCount = 0;
 
-        classes.forEach(klass => {
+        sortedClasses.forEach(klass => {
             const userId = data.ID;
-            if (klass.registered_users.indexOf(userId) > -1) {
+            if (klass.registered_users && klass.registered_users.indexOf(userId) > -1) {
                 attendedCount++;
             }
             if (klass.meta.host_name_.ID === userId) {

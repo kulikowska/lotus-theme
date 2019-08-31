@@ -23,6 +23,7 @@ function theme_enqueue_styles() {
     wp_enqueue_style( 'google-font', 'https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap', array(), $the_theme->get( 'Version' ) );
     wp_enqueue_script( 'jquery');
     wp_enqueue_script( 'child-understrap-scripts', get_stylesheet_directory_uri() . '/js/child-theme.min.js', array(), $the_theme->get( 'Version' ), true );
+    wp_enqueue_script( 'custom-js', get_stylesheet_directory_uri() . '/js/custom-functions.js');
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );
     }
@@ -108,3 +109,34 @@ add_action( 'rest_api_init', function () {
     'callback' => 'lotus_signup',
   ));
 });
+
+/* GLOBALS */
+
+$classes = get_posts(array( 'post_type' => 'classes'));
+foreach($classes as $i => $class) {
+    $meta = get_fields($class->ID);
+    $thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $class->ID ), 'single-post-thumbnail' );
+
+    $classes[$i]->meta          = $meta;
+    $classes[$i]->thumbnail     = $thumbnail;
+    $classes[$i]->registered_users = get_field('registered_users', $class->ID);
+    $classes[$i]->host_profile  = um_user_profile_url($meta->host_name_->ID);
+}
+
+$currentUser = wp_get_current_user(); 
+
+$users = get_users();
+foreach($users as $i => $user) {
+    $users[$i]->profile_url = um_user_profile_url($user->ID);
+}
+/*
+function login_redirect( $redirect_to, $request, $user ){
+    return home_url('scheduler');
+}
+add_filter( 'login_redirect', 'login_redirect', 10, 3 );
+
+
+if ( !is_user_logged_in() ) {
+    auth_redirect();
+}
+*/
