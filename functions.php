@@ -129,14 +129,3 @@ $users = get_users();
 foreach($users as $i => $user) {
     $users[$i]->profile_url = um_user_profile_url($user->ID);
 }
-/*
-function login_redirect( $redirect_to, $request, $user ){
-    return home_url('scheduler');
-}
-add_filter( 'login_redirect', 'login_redirect', 10, 3 );
-
-
-if ( !is_user_logged_in() ) {
-    auth_redirect();
-}
-*/

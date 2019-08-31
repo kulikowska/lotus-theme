@@ -1,4 +1,8 @@
 <?php /* Template Name: Custom Profile */
+    if ( !is_user_logged_in() ) {
+        auth_redirect();
+    }
+
     $user_id = um_profile_id();
     $user_data = get_userdata($user_id);
     $user_data->avatar = get_avatar_url($user_id);
