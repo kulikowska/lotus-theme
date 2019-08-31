@@ -1,15 +1,15 @@
 <?php /* Template Name: Custom Profile */
     $user_id = um_profile_id();
     $user_data = get_userdata($user_id);
-    $user_avatar = get_avatar_url($user_id);
-    $user_verification = $user_data->personal_verification;
+    $user_data->avatar = get_avatar_url($user_id);
+    $user_data->verification = $user_data->personal_verification;
 
     $recommendedByID = $user_data->recommended_by; 
     if (isset($recommendedByID)) {
-        $recommendedByUser = get_userdata($recommendedByID)->display_name;
+        $user_data->recommendedBy = $recommendedByUser = get_userdata($recommendedByID)->display_name;
     }
 
-    $joinedDate = date('F Y', strtotime($user_data->data->user_registered));
+    $user_data->joined = date('F Y', strtotime($user_data->data->user_registered));
 ?>
 
 <?php get_header(); ?>
@@ -59,15 +59,11 @@
 
 <script>
     const data              = <?php echo json_encode($user_data)  ?>;
-    const avatar            = <?php echo json_encode($user_avatar)  ?>;
-    const verification      = <?php echo json_encode($user_verification)  ?>;
-    const recommended       = <?php echo json_encode($recommendedByUser)  ?>;
-    const joined            = <?php echo json_encode($joinedDate)  ?>;
-    let classes             = <?php echo json_encode($classes)  ?>;
+    let sessions            = <?php echo json_encode($classes)  ?>;
     const $                 = jQuery;
 
     jQuery(document).ready(function() {
-        sortedClasses = classes.sort(function(a, b){
+        sessions.sort(function(a, b){
             let today = new Date();
             let dateA = moment(a.meta.date + a.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY h:mm A').toDate()
             let dateB = moment(b.meta.date + b.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY hh:mm A').toDate()
@@ -75,15 +71,15 @@
             return dateA < dateB ? -1 : dateA > dateB ? 1 : 0;
         });
 
-        let thisHostsClasses = sortedClasses.filter(klass => klass.meta.host_name_.ID === data.ID);
+        sessions.filter(session => session.meta.host_name_.ID === data.ID);
         if (data.roles.indexOf('host') !== -1) {
             $('.schedule').append('<div class="session-hosted">Sessions Hosted </div>');    
-            thisHostsClasses.map(session => {
+            sessions.map(session => {
 
-                const classDate = moment(session.meta.date, 'DD-MM-YYYY').toDate();
-                const formattedDate = moment(classDate).format('dddd, MMMM DD, YYYY');
+                const sessionDate = moment(session.meta.date, 'DD-MM-YYYY').toDate();
+                const formattedDate = moment(sessionDate).format('dddd, MMMM DD, YYYY');
 
-                let item = `<div class="a-class">`;
+                let item = `<div class="session">`;
 
                 if (session.thumbnail[0]) { 
                      item += `
@@ -115,44 +111,42 @@
         }
 
 
-
-        sortedClasses  = sortedClasses.filter(klass => moment(klass.meta.date, 'DD-MM-YYYY').toDate() < new Date());
-        /*
-        let idx = sortedClasses.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() > new Date());
-        sortedClasses.length = idx;
-        */
+        /* Get data from passed sessions */
+        let passedSessions = sessions.filter(session => moment(session.meta.date, 'DD-MM-YYYY').toDate() < new Date());
 
         let hostedCount = 0;
         let attendedCount = 0;
 
-        sortedClasses.forEach(klass => {
+        passedSessions.forEach(session => {
             const userId = data.ID;
-            if (klass.registered_users && klass.registered_users.indexOf(userId) > -1) {
+            if (session.registered_users && session.registered_users.indexOf(userId) > -1) {
                 attendedCount++;
             }
-            if (klass.meta.host_name_.ID === userId) {
+            if (session.meta.host_name_.ID === userId) {
                 hostedCount++;
             }
         });
 
+
+        console.log(data);
+
+        /* Update DOM */
         if (data.roles.indexOf('host') > -1) {
             jQuery('#hosted-wrap').show();
             jQuery('#hosted').text(hostedCount);
         }
         jQuery('#attended').text(attendedCount);
 
-        //console.log(classes.reverse(), ' classes after');
-
         jQuery('#name').text(data.data.display_name);
-        jQuery('#picture').attr("src", avatar);
-        jQuery('#joined').text('Joined ' + joined);
+        jQuery('#picture').attr("src", data.data.avatar);
+        jQuery('#joined').text('Joined ' + data.data.joined);
 
-        if (recommended) {
+        if (data.data.recommendedBy) {
             jQuery('.recommendedBy').show();
-            jQuery('#recommended').text(recommended);
+            jQuery('#recommended').text(data.data.recommended);
         }
         
-        if (verification && verification.length === 3) {
+        if (data.data.verification && data.data.verification.length === 3) {
             jQuery('.verified.yes').show();
         } else {
             jQuery('.verified.no').show();

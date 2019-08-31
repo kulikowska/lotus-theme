@@ -20,7 +20,6 @@ body {
 body .user-profile-container {
     margin : 20px auto;
     max-width : 800px;
-    background : #fff;
     padding : 20px;
     color : #434343;
 }
@@ -106,7 +105,7 @@ body .user-profile-container {
 .schedule {
     margin : 20px auto;
 }
-.a-class {
+.session{
     display : flex;
     margin : 30px 0px 100px;
 }
@@ -177,7 +176,7 @@ h1 {
     justify-content : space-between;
 }
 @media screen and (max-width: 650px) {
-    .a-class {
+    .session {
         flex-direction : column;
     }
     .left-chunk {
@@ -196,6 +195,7 @@ h1 {
     body .user-profile-container {
         border : 1px solid #ddd;
         padding : 50px;
+        background : #fff;
         margin : 40px auto;
     }
 }
