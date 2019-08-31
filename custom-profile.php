@@ -113,8 +113,11 @@
 
 
 
+        sortedClasses  = sortedClasses.filter(klass => moment(klass.meta.date, 'DD-MM-YYYY').toDate() < new Date());
+        /*
         let idx = sortedClasses.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() > new Date());
         sortedClasses.length = idx;
+        */
 
         let hostedCount = 0;
         let attendedCount = 0;

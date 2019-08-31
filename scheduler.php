@@ -53,7 +53,7 @@
 </div><!-- Wrapper end -->
 
 <script>
-    const classes       = <?php echo json_encode($classes)  ?>;
+    let classes       = <?php echo json_encode($classes)  ?>;
     const currentUser   = <?php echo json_encode($currentUser)  ?>;
     const url           = <?php echo json_encode(get_site_url( $wp->request )) ?>;
     const users         = <?php echo json_encode($users)  ?>;
@@ -71,20 +71,14 @@
             let dateA = moment(a.meta.date + a.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY h:mm A').toDate()
             let dateB = moment(b.meta.date + b.meta.time_of_class.replace(' ', ''), 'DD-MM-YYYY hh:mm A').toDate()
 
-            //console.log(dateA);
-            //console.log(dateB);
             return dateA > dateB ? -1 : dateA < dateB ? 1 : 0;
         });
 
         //const basicOrHost = currentUser.roles.indexOf('basic') !== -1 || currentUser.roles.indexOf('host') !== -1 ? true : false;
         const basicOrHost = currentUser.roles.indexOf('administrator') === -1 ? true : false;
         if (basicOrHost) {
-            let idx = classes.findIndex(klass => moment(klass.meta.date, 'YY-MM-DD').toDate() < new Date());
-            classes.length = idx;
+            classes  = classes.filter(klass => moment(klass.meta.date, 'DD-MM-YYYY').toDate() > new Date());
         }
-
-        console.log(basicOrHost, ' basic or host');
-        console.log('classes from scheduler', classes);
 
         classes.reverse();
 
