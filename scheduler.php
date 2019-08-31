@@ -6,29 +6,33 @@
 
 <?php get_header(); ?>
 
-    <div class="main-schedule-wrap">
-        <div class="schedule"></div>
+    <?php while ( have_posts() ) : the_post(); ?>
 
-        <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="detailModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <ul class="list-group">
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <div class="main-schedule-wrap">
+            <div class="schedule"></div>
+
+            <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="detailModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group">
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+    <?php endwhile; // end of the loop. ?>
 
 
 </div><!-- .content-area -->
@@ -127,7 +131,7 @@
                     </div>`
             }
 
-            const adminOrHost = currentUser.roles.indexOf('administrator') !== -1 || currentUser.roles.indexOf('host') !== -1 ? true : false;
+            const adminOrHost = currentUser.roles.indexOf('administrator') !== -1 || currentUser.roles.indexOf('host') !== -1 || currentUser.roles.indexOf('um_host') !== -1 ? true : false;
             if (adminOrHost) {
                 item += `<button type="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${sessionId})">
                         Details

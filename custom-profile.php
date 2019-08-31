@@ -18,40 +18,42 @@
 
 <?php get_header(); ?>
 
-	<div class="user-profile-container">
-        <div class="center-me">
-            <span id="name"></span>
-            <img alt="profile picture" id="picture"></span>
-            <span id="joined"></span>
+    <?php while ( have_posts() ) : the_post(); ?>
+        <div class="user-profile-container">
+            <div class="center-me">
+                <span id="name"></span>
+                <img alt="profile picture" id="picture"></span>
+                <span id="joined"></span>
 
-            <span class="verified yes" style="display : none">
-                <span class="dashicons dashicons-yes"></span>
-                <span> Verified </span>
-            </span>
-            <span class="verified no" style="display : none">
-                <span class="dashicons dashicons-no"></span>
-                <span>Not Verified </span>
-            </span>
-        </div>
-
-        <div class="sessions">
-            <h1> Sessions </h1>
-            <div>
-                <label> Attended: </label>
-                <span id="attended"> </span>
+                <span class="verified yes" style="display : none">
+                    <span class="dashicons dashicons-yes"></span>
+                    <span> Verified </span>
+                </span>
+                <span class="verified no" style="display : none">
+                    <span class="dashicons dashicons-no"></span>
+                    <span>Not Verified </span>
+                </span>
             </div>
-            <div id="hosted-wrap" style="display : none ">
-                <label> Hosted: </label>
-                <span id="hosted"> </span>
+
+            <div class="sessions">
+                <h1> Sessions </h1>
+                <div>
+                    <label> Attended: </label>
+                    <span id="attended"> </span>
+                </div>
+                <div id="hosted-wrap" style="display : none ">
+                    <label> Hosted: </label>
+                    <span id="hosted"> </span>
+                </div>
             </div>
-        </div>
 
-        <div class="sessions recommendedBy" style="display : none">
-            <div id="recommended-wrap">Recommended by <span id="recommended"></span></div>
-        </div>
+            <div class="sessions recommendedBy" style="display : none">
+                <div id="recommended-wrap">Recommended by <span id="recommended"></span></div>
+            </div>
 
-        <div class="schedule"></div>
-    </div>
+            <div class="schedule"></div>
+        </div>
+    <?php endwhile; // end of the loop. ?>
 
 
 </div><!-- .content-area -->
@@ -63,6 +65,7 @@
 
 <script>
     const data              = <?php echo json_encode($user_data)  ?>;
+    const currentUser       = <?php echo json_encode($currentUser)  ?>;
     let sessions            = <?php echo json_encode($classes)  ?>;
     const $                 = jQuery;
 
@@ -76,9 +79,16 @@
         });
 
         sessions.filter(session => session.meta.host_name_.ID === data.ID);
-        if (data.roles.indexOf('host') !== -1) {
-            $('.schedule').append('<div class="session-hosted">Sessions Hosted </div>');    
-            sessions.map(session => {
+
+        const basicOrHost = currentUser.roles.indexOf('administrator') === -1 ? true : false;
+        let futureSessions = sessions;
+        if (basicOrHost) {
+            futureSessions = sessions.filter(session => moment(session.meta.date, 'DD-MM-YYYY').toDate() > new Date());
+        }
+
+        if (data.roles.indexOf('host') !== -1 || data.roles.indexOf('um_host') !== -1) {
+            $('.schedule').append('<div class="session-hosted">Upcoming Sessions</div>');    
+            futureSessions.map(session => {
 
                 const sessionDate = moment(session.meta.date, 'DD-MM-YYYY').toDate();
                 const formattedDate = moment(sessionDate).format('dddd, MMMM DD, YYYY');
@@ -135,7 +145,7 @@
         console.log(data);
 
         /* Update DOM */
-        if (data.roles.indexOf('host') > -1) {
+        if (data.roles.indexOf('host') > -1 || data.roles.indexOf('um_host') > -1) {
             jQuery('#hosted-wrap').show();
             jQuery('#hosted').text(hostedCount);
         }
@@ -147,7 +157,7 @@
 
         if (data.data.recommendedBy) {
             jQuery('.recommendedBy').show();
-            jQuery('#recommended').text(data.data.recommended);
+            jQuery('#recommended').text(data.data.recommendedBy);
         }
         
         if (data.data.verification && data.data.verification.length === 3) {

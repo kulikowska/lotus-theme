@@ -27,7 +27,7 @@ body .user-profile-container {
     display : flex;
     flex-direction : column;
     align-items : center;
-    font-size : 14px;
+    font-size : 16px;
     margin-bottom : 30px;
 }
 .user-profile-container #name {
@@ -45,20 +45,23 @@ body .user-profile-container {
     padding : 20px 0px;
 }
 .user-profile-container .sessions h1 {
-    font-size : 16px;
+    font-size : 18px;
     margin-bottom: 20px;
 }
 .user-profile-container .sessions div label {
-    font-size : 14px;
+    font-size : 16px;
     color : #615f5f;
 }
 .user-profile-container .sessions div span {
     font-weight : bold;
-    font-size : 15px;
+    font-size : 17px;
 }
 .user-profile-container #recommended-wrap {
     margin-top : 10px;
-    font-size : 15px;
+    font-size : 16px;
+}
+#recommended {
+    font-weight : bold;
 }
 .dashicons.dashicons:before {
     font-size : 20px;
@@ -103,7 +106,7 @@ body .user-profile-container {
     }
 }
 .schedule {
-    margin : 20px auto;
+    margin : 10px auto;
 }
 .session{
     display : flex;
