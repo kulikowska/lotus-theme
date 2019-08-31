@@ -96,7 +96,10 @@
                      <div class="right-chunk">
                          <h1>
                              <div class="title"> ${session.post_title} </div>
-                             <a href=${session.host_profile} class="host"> ${session.meta.host_name_.display_name} </a>
+                             <a href=${session.host_profile} class="host">
+                                <span class="dashicons dashicons-admin-users"></span>
+                                ${session.meta.host_name_.display_name} </a>
+                             </a>
                          </h1>
                          <div class="details">
                              <div class="date"> ${formattedDate} </div>
