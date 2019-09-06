@@ -25,7 +25,7 @@
                             </ul>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-outline-dark details-button" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -88,6 +88,7 @@
                          <div class="title"> ${sessions[i].post_title} </div>
                          <a href=${sessions[i].host_profile} class="host"> 
                             <span class="dashicons dashicons-admin-users"></span>
+                            Hosted by
                             ${sessions[i].meta.host_name_.display_name}
                          </a>
                      </h1>
@@ -119,7 +120,7 @@
             let item = '';
 
             if (signedUp || (slotsAvailable - registeredCount !== 0)) {
-                item += `<button type="button" data-session-id=${sessionId} class="btn btn-outline-info" onclick="signUp(event)"> ${signedUp ? 'Cancel Sign Up' : 'Sign Up'}</button>`
+                item += `<button type="button" data-session-id=${sessionId} class="btn btn-outline-info custom-button-color" onclick="signUp(event)"> ${signedUp ? 'Cancel Sign Up' : 'Sign Up'}</button>`
             }
 
             if (registeredCount  >= slotsAvailable) {
@@ -131,12 +132,9 @@
                     </div>`
             }
 
-            const adminOrHost = currentUser.roles.indexOf('administrator') !== -1 || currentUser.roles.indexOf('host') !== -1 || currentUser.roles.indexOf('um_host') !== -1 ? true : false;
-            if (adminOrHost) {
-                item += `<button type="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${sessionId})">
-                        Details
+            item += `<button type="button" class="btn btn-outline-dark details-button" data-toggle="modal" data-target="#details" onClick="getModalDetails(${sessionId})">
+                        Who else is attending
                     </button>`
-            }
 
             if (update) {
                 $('#' + sessionId).html(item);
@@ -199,7 +197,7 @@
                 <div class="list-group-item"> 
                     ${thisUser.data.display_name} 
                     <a href="${thisUser.data.profile_url}">
-                        <button type="button" class="btn btn-outline-dark">
+                        <button type="button" class="btn btn-outline-dark details-button">
                             View Profile
                         </button>
                     </a>

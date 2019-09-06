@@ -10,7 +10,8 @@
 
     $recommendedByID = $user_data->recommended_by; 
     if (isset($recommendedByID)) {
-        $user_data->recommendedBy = $recommendedByUser = get_userdata($recommendedByID)->display_name;
+        //$user_data->recommendedBy = $recommendedByUser = get_userdata($recommendedByID)->display_name;
+        $user_data->recommendedBy = $recommendedByID;
     }
 
     $user_data->joined = date('F Y', strtotime($user_data->data->user_registered));
@@ -66,6 +67,7 @@
 <script>
     const data              = <?php echo json_encode($user_data)  ?>;
     const currentUser       = <?php echo json_encode($currentUser)  ?>;
+    const allUsers          = <?php echo json_encode($users)  ?>;
     let sessions            = <?php echo json_encode($classes)  ?>;
     const $                 = jQuery;
 
@@ -142,7 +144,7 @@
         });
 
 
-        console.log(data);
+        //console.log(data);
 
         /* Update DOM */
         if (data.roles.indexOf('host') > -1 || data.roles.indexOf('um_host') > -1) {
@@ -156,8 +158,9 @@
         jQuery('#joined').text('Joined ' + data.data.joined);
 
         if (data.data.recommendedBy) {
+            let recommendedByUser = allUsers.find(user => user.ID == data.data.recommendedBy);
             jQuery('.recommendedBy').show();
-            jQuery('#recommended').text(data.data.recommendedBy);
+            jQuery('#recommended').html(`<a href="${recommendedByUser.data.profile_url}"> ${recommendedByUser.data.display_name} </a>`);
         }
         
         if (data.data.verification && data.data.verification.length === 3) {

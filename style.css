@@ -14,8 +14,39 @@
 */
 
 body {
-    font-family : Source Sans Pro;
-    background-color : #F2F4F3;
+    /* background-color : #F2F4F3; */
+    background-color : #fbfbf5;
+    font-family: 'Raleway', sans-serif;
+}
+
+body a {
+    color: #2a251f;
+}
+
+.lotus-logo {
+    width : 70px;
+    height : 50px;
+    background-image : url('images/lotus-done-1.png');
+    background-image : url('images/lotus-outline-black.png');
+    background-image : url('images/lotus-outline-4.png');
+    background-image : url('images/lotus-outline-cropped.svg');
+    background-size : contain;
+    background-repeat : no-repeat;
+}
+/* understrap css override for navbar*/
+body .navbar.navbar-expand-md.navbar-dark.bg-dark {
+    /* background : #28362B!important; */
+    background : #2a251f!important;
+}
+body .navbar-dark .navbar-nav .nav-link {
+    color : #fff;
+    font-size : 15px;
+}
+.navbar-brand {
+    font-size : 24px;
+    font-family : 'Leckerli One', cursive;
+    font-weight : normal;
+
 }
 body .user-profile-container {
     margin : 20px auto;
@@ -133,14 +164,14 @@ h1 {
 }
 .host {
     font-size: 18px;
-    color : #333;
+    color : #2A2520;
     display : flex;
     align-items : center;
     transition : 200ms;
 }
 .host:hover {
     text-decoration : none;
-    /*color : #519d08; */
+    color : #2A2520;
     opacity : 0.6;
 }
 .host .dashicons {
@@ -148,7 +179,6 @@ h1 {
 }
 .host .dashicons:before {
     font-size : 18px;
-    padding : 2px 2px 2px 3px;
 }
 .details {
     color : #7a7a7a;
@@ -168,16 +198,88 @@ h1 {
     color : #7a7a7a;
     margin-top : 5px;
 }
-.details-button {
+.sign-up .details-button {
     position : absolute;
     top : 20px;
     right : 0px;
+    max-width : 110px;
+    font-size : 14px;
 }
 .list-group-item {
     display : flex;
     align-items : center;
     justify-content : space-between;
 }
+
+/* override bootstrap button color */
+.btn-outline-info.custom-button-color {
+  margin-bottom : 5px;
+  background-color: #7DC242;
+  color: #fff;
+  border-color: #7DC242;
+}
+
+.btn-outline-info.custom-button-color:hover {
+  color: #fff;
+  background-color: #65923e;
+  border-color: #65923e;
+}
+
+.btn-outline-info.custom-button-color:focus, .btn-outline-info.custom-botton-color.focus {
+  box-shadow : none !important;
+  border-color: #7DC242;
+  background-color: #7DC242;
+  color: #fff;
+  border-color: #7DC242;
+}
+
+.btn-outline-info.custom-button-color.disabled, .btn-outline-info-.custom-button-color:disabled {
+  background-color: #7DC242;
+  color: #fff;
+  border-color: #7DC242;
+}
+
+.btn-outline-info.custom-button-color:active, .btn-outline-info.custom-button-color.active,
+.show > .btn-outline-info.custom-button-color.dropdown-toggle {
+  background-image: none;
+  background-color: #7DC242 !important;
+  color: #fff;
+  border-color: #7DC242 !important;
+}
+
+/* Details Buttons */
+.btn-outline-dark.details-button {
+  color: #2a251f;
+  background-color: #fff;
+  border-color: #2a251f;
+}
+
+.btn-outline-dark.details-button:hover {
+  background-color: #2a251f;
+  color: #fff;
+  border-color: #2a251f;
+}
+
+.btn-outline-dark.details-button:focus, .btn-outline-dark.custom-botton-color.focus {
+  box-shadow : none !important;
+  background-color: #fff;
+  color: #2a251f;
+  border-color: #2a251f;
+}
+
+.btn-outline-dark.details-button.disabled, .btn-outline-dark-.details-button:disabled {
+  background-color: #2a251f;
+  border-color: #2a251f;
+}
+
+.btn-outline-dark.details-button:active, .btn-outline-dark.details-button.active,
+.show > .btn-outline-dark.details-button.dropdown-toggle {
+  background-image: none;
+  background-color: #fff !important;
+  color: #2a251f !important;
+  border-color: #2a251f !important;
+}
+
 @media screen and (max-width: 650px) {
     .session {
         flex-direction : column;
@@ -196,7 +298,8 @@ h1 {
 }
 @media screen and (min-width: 768px) {
     body .user-profile-container {
-        border : 1px solid #ddd;
+        border : 1px solid rgba(43, 38, 31, 0.2);
+        border-radius : 4px;
         padding : 50px;
         background : #fff;
         margin : 40px auto;
