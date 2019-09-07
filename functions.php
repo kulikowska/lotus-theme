@@ -102,13 +102,34 @@ function lotus_signup($request) {
 
     return $ret;
 }
-
 add_action( 'rest_api_init', function () {
   register_rest_route('lotus', 'signup', array(
     'methods' => 'POST',
     'callback' => 'lotus_signup',
   ));
 });
+
+function lotus_get_sessions($request) {
+    $classes = get_posts(array( 'post_type' => 'classes'));
+    foreach($classes as $i => $class) {
+        $meta = get_fields($class->ID);
+        $thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $class->ID ), 'single-post-thumbnail' );
+
+        $classes[$i]->meta          = $meta;
+        $classes[$i]->thumbnail     = $thumbnail;
+        $classes[$i]->registered_users = get_field('registered_users', $class->ID);
+        $classes[$i]->host_profile  = um_user_profile_url($meta->host_name_->ID);
+    }
+    return $classes;
+}
+
+add_action( 'rest_api_init', function () {
+  register_rest_route('lotus', 'getSessions', array(
+    'methods' => 'GET',
+    'callback' => 'lotus_get_sessions',
+  ));
+});
+
 
 /* GLOBALS */
 

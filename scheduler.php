@@ -48,6 +48,7 @@
     const url           = <?php echo json_encode(get_site_url( $wp->request )) ?>;
     const users         = <?php echo json_encode($users)  ?>;
     const $             = jQuery;
+    let currentModalID  = false;
     //console.log(url, sessions, users, currentUser);
     //console.log(sessions);
 
@@ -204,6 +205,28 @@
                 </div>
             `);
         });
+        currentModalID = sessionId;
     }
+
+    // Update sessions data every 20 seconds
+    setInterval(function() {
+        fetch(url + '/wp-json/lotus/getSessions',{
+          method : 'GET',
+        })
+        .then(response => response.json())
+        .then(json => {
+            json.map(session => {
+                // Update sign up section
+                drawSignUp(session.ID, session.registered_users, session.meta.slots_available, true);
+
+                // Update sessions data + modal
+                const idxToUpdate = sessions.findIndex(existingSession => existingSession.ID === session.ID);
+                if (sessions[idxToUpdate]) { sessions[idxToUpdate].registered_users = session.registered_users; }
+                if (currentModalID) { getModalDetails(currentModalID); }
+            });
+        })
+        .catch(error => console.log(error.message));
+    }, 20000);
+
 </script>
 <?php get_footer(); ?>
