@@ -36,6 +36,7 @@
                 </span>
             </div>
 
+
             <div class="sessions">
                 <h1> Sessions </h1>
                 <div>
@@ -48,6 +49,37 @@
                 </div>
             </div>
 
+            <div class="sessions verification">
+                <h1> Verification</h1>
+
+                <!--
+                <span class="verified license no">
+                    <span class="dashicons dashicons-id"></span>
+                    <span> Driver's License</span>
+                </span>
+                <span class="verified facebook no">
+                    <span class="dashicons dashicons-facebook-alt"></span>
+                    <span> Facebook</span>
+                </span>
+                <span class="verified mobile no">
+                    <span class="dashicons dashicons-phone"></span>
+                    <span> Mobile</span>
+                </span>
+                !-->
+
+                <span class="verified license no">
+                    <span class="dashicons dashicons-no"></span>
+                    <span> Driver's License</span>
+                </span>
+                <span class="verified facebook no">
+                    <span class="dashicons dashicons-no"></span>
+                    <span> Facebook</span>
+                </span>
+                <span class="verified mobile no">
+                    <span class="dashicons dashicons-no"></span>
+                    <span> Mobile</span>
+                </span>
+            </div>
             <div class="sessions recommendedBy" style="display : none">
                 <div id="recommended-wrap">Recommended by <span id="recommended"></span></div>
             </div>
@@ -110,6 +142,7 @@
                              <div class="title"> ${session.post_title} </div>
                              <a href=${session.host_profile} class="host">
                                 <span class="dashicons dashicons-admin-users"></span>
+                                Hosted by
                                 ${session.meta.host_name_.display_name} </a>
                              </a>
                          </h1>
@@ -144,8 +177,6 @@
         });
 
 
-        //console.log(data);
-
         /* Update DOM */
         if (data.roles.indexOf('host') > -1 || data.roles.indexOf('um_host') > -1) {
             jQuery('#hosted-wrap').show();
@@ -167,6 +198,22 @@
             jQuery('.verified.yes').show();
         } else {
             jQuery('.verified.no').show();
+        }
+
+        if (data.data.verification.length > 0) {
+            data.data.verification.forEach(type => {
+
+                let map = {
+                    'Drivers License' : 'license',
+                    'Facebook'        : 'facebook',
+                    'Mobile'          : 'mobile'
+                }
+
+                $(`.${map[type]}`).removeClass('no');
+                $(`.${map[type]} .dashicons`).removeClass('dashicons-no');
+                $(`.${map[type]}`).addClass('yes');
+                $(`.${map[type]} .dashicons`).addClass('dashicons-yes');
+            });
         }
     });
 </script>

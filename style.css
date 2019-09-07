@@ -87,6 +87,22 @@ body .user-profile-container {
     font-weight : bold;
     font-size : 17px;
 }
+.user-profile-container .sessions.verification span {
+    font-size : 15px;
+    margin-right : 10px;
+}
+.user-profile-container .sessions.verification .verified {
+    margin-right : 18px;
+    display : flex;
+    align-items : center;
+    margin-top : 18px; 
+}
+.user-profile-container .sessions.verification .dashicons:before {
+    font-size : 15px;
+    padding : 2px;
+    /* color : #77bf40; */
+    opacity : 0.9;
+}
 .user-profile-container #recommended-wrap {
     margin-top : 10px;
     font-size : 16px;
@@ -105,7 +121,7 @@ body .user-profile-container {
     margin-right : 7px;
 }
 .dashicons.dashicons-yes:before {
-    color : #2ba12b;
+    color : #77bf40;
 }
 .dashicons.dashicons-no:before {
     color : #e06464;
@@ -114,7 +130,7 @@ body .user-profile-container {
     margin-top : 10px;
 }
 .verified.no {
-    opacity : 0.6;
+    opacity : 0.4;
 }
 .session-hosted {
     border-top : 1px solid #eee;
