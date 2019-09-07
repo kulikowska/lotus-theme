@@ -141,7 +141,6 @@
                          <h1>
                              <div class="title"> ${session.post_title} </div>
                              <a href=${session.host_profile} class="host">
-                                <span class="dashicons dashicons-admin-users"></span>
                                 Hosted by
                                 ${session.meta.host_name_.display_name} </a>
                              </a>
