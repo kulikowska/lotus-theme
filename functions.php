@@ -110,7 +110,7 @@ add_action( 'rest_api_init', function () {
 });
 
 function lotus_get_sessions($request) {
-    $classes = get_posts(array( 'post_type' => 'classes'));
+    $classes = get_posts(array( 'post_type' => 'classes', 'numberposts' => 999999));
     foreach($classes as $i => $class) {
         $meta = get_fields($class->ID);
         $thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $class->ID ), 'single-post-thumbnail' );
@@ -133,7 +133,7 @@ add_action( 'rest_api_init', function () {
 
 /* GLOBALS */
 
-$classes = get_posts(array( 'post_type' => 'classes'));
+$classes = get_posts(array( 'post_type' => 'classes', 'numberposts' => 999999));
 foreach($classes as $i => $class) {
     $meta = get_fields($class->ID);
     $thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $class->ID ), 'single-post-thumbnail' );

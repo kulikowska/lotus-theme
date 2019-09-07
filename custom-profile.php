@@ -112,10 +112,10 @@
             return dateA < dateB ? -1 : dateA > dateB ? 1 : 0;
         });
 
-        sessions.filter(session => session.meta.host_name_.ID === data.ID);
+        let thisHostsSessions = sessions.filter(session => session.meta.host_name_.ID === data.ID);
 
         const basicOrHost = currentUser.roles.indexOf('administrator') === -1 ? true : false;
-        let futureSessions = sessions;
+        let futureSessions = thisHostsSessions;
         if (basicOrHost) {
             futureSessions = sessions.filter(session => moment(session.meta.date, 'DD-MM-YYYY').toDate() > new Date());
         }
