@@ -117,7 +117,7 @@
         const basicOrHost = currentUser.roles.indexOf('administrator') === -1 ? true : false;
         let futureSessions = thisHostsSessions;
         if (basicOrHost) {
-            futureSessions = sessions.filter(session => moment(session.meta.date, 'DD-MM-YYYY').toDate() > new Date());
+            futureSessions = thisHostsSessions.filter(session => moment(session.meta.date, 'DD-MM-YYYY').toDate() > new Date());
         }
 
         if (data.roles.indexOf('host') !== -1 || data.roles.indexOf('um_host') !== -1) {
