@@ -93,6 +93,10 @@ body .user-profile-container {
     font-weight : bold;
     font-size : 17px;
 }
+.user-profile-container .sessions.verification .verification-wrap {
+    display : flex;
+    flex-wrap : wrap;
+}
 .user-profile-container .sessions.verification span {
     font-size : 15px;
     margin-right : 10px;
@@ -101,13 +105,14 @@ body .user-profile-container {
     margin-right : 18px;
     display : flex;
     align-items : center;
-    margin-top : 18px; 
+    margin-top : 12px; 
+    flex-grow : 1;
+    width : 40%;
 }
 .user-profile-container .sessions.verification .dashicons:before {
     font-size : 15px;
     padding : 2px;
     /* color : #77bf40; */
-    opacity : 0.9;
 }
 .user-profile-container #recommended-wrap {
     margin-top : 10px;
@@ -131,12 +136,12 @@ body .user-profile-container {
 }
 .dashicons.dashicons-no:before {
     color : #e06464;
+    /* color : #fa8080; */
+    margin-right : -2px;
+    opacity : 0.5;
 }
 .verified {
     margin-top : 10px;
-}
-.verified.no {
-    opacity : 0.4;
 }
 .session-hosted {
     border-top : 1px solid #eee;

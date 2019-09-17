@@ -15,6 +15,8 @@
     }
 
     $user_data->joined = date('F Y', strtotime($user_data->data->user_registered));
+
+    $verificationFields = get_field_object('personal_verification', 'user_'.$user_id)['choices'];
 ?>
 
 <?php get_header(); ?>
@@ -25,15 +27,6 @@
                 <span id="name"></span>
                 <img alt="profile picture" id="picture"></span>
                 <span id="joined"></span>
-
-                <span class="verified yes" style="display : none">
-                    <span class="dashicons dashicons-yes"></span>
-                    <span> Verified </span>
-                </span>
-                <span class="verified no" style="display : none">
-                    <span class="dashicons dashicons-no"></span>
-                    <span>Not Verified </span>
-                </span>
             </div>
 
 
@@ -51,34 +44,8 @@
 
             <div class="sessions verification">
                 <h1> Verification</h1>
-
-                <!--
-                <span class="verified license no">
-                    <span class="dashicons dashicons-id"></span>
-                    <span> Driver's License</span>
-                </span>
-                <span class="verified facebook no">
-                    <span class="dashicons dashicons-facebook-alt"></span>
-                    <span> Facebook</span>
-                </span>
-                <span class="verified mobile no">
-                    <span class="dashicons dashicons-phone"></span>
-                    <span> Mobile</span>
-                </span>
-                !-->
-
-                <span class="verified license no">
-                    <span class="dashicons dashicons-no"></span>
-                    <span> Driver's License</span>
-                </span>
-                <span class="verified facebook no">
-                    <span class="dashicons dashicons-no"></span>
-                    <span> Facebook</span>
-                </span>
-                <span class="verified mobile no">
-                    <span class="dashicons dashicons-no"></span>
-                    <span> Mobile</span>
-                </span>
+                <div class="verification-wrap">
+                </div>
             </div>
             <div class="sessions recommendedBy" style="display : none">
                 <div id="recommended-wrap">Recommended by <span id="recommended"></span></div>
@@ -100,6 +67,7 @@
     const data              = <?php echo json_encode($user_data)  ?>;
     const currentUser       = <?php echo json_encode($currentUser)  ?>;
     const allUsers          = <?php echo json_encode($users)  ?>;
+    const allVerification   = <?php echo json_encode($verificationFields)  ?>;
     let sessions            = <?php echo json_encode($classes)  ?>;
     const $                 = jQuery;
 
@@ -192,28 +160,16 @@
             jQuery('.recommendedBy').show();
             jQuery('#recommended').html(`<a href="${recommendedByUser.data.profile_url}"> ${recommendedByUser.data.display_name} </a>`);
         }
-        
-        if (data.data.verification && data.data.verification.length === 3) {
-            jQuery('.verified.yes').show();
-        } else {
-            jQuery('.verified.no').show();
-        }
 
-        if (data.data.verification.length > 0) {
-            data.data.verification.forEach(type => {
+        Object.keys(allVerification).map(item => {
+            let newEl = `<span class="verified">`;
 
-                let map = {
-                    'Drivers License' : 'license',
-                    'Facebook'        : 'facebook',
-                    'Mobile'          : 'mobile'
-                }
+            let checked = data.data.verification.indexOf(item) !== -1 ? 'yes' : 'no';
+            newEl += `<span class="dashicons dashicons-${checked}"></span>`;
+            newEl += `${allVerification[item]} </span>`;
 
-                $(`.${map[type]}`).removeClass('no');
-                $(`.${map[type]} .dashicons`).removeClass('dashicons-no');
-                $(`.${map[type]}`).addClass('yes');
-                $(`.${map[type]} .dashicons`).addClass('dashicons-yes');
-            });
-        }
+            $('.verification-wrap').append(newEl);
+        });
     });
 </script>
 <?php get_footer(); ?>
